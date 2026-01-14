@@ -36,9 +36,14 @@ void guardarVehiculos(int cantidad) {
         fgets(modelo, sizeof(modelo), stdin);
         modelo[strcspn(modelo, "\n")] = '\0';
 
+        do {
         printf("Precio: ");
         scanf("%f", &precio);
-        getchar();
+
+        if (precio <= 0) {
+        printf("Error: el precio debe ser mayor que 0.\n");
+        }
+        } while (precio <= 0);
 
         fprintf(archivo, "%d %s %s %s %.2f %d\n",id, tipo, marca, modelo, precio, disponible);
     }
@@ -81,8 +86,11 @@ void mostrarVehiculos() {
 void buscarVehiculoPreferencias() {
     archivo = fopen("vehiculos.txt", "r");
 
-    int id, disponible;
-    char tipo[20], marca[20], modelo[20];
+    int id;
+    int disponible;
+    char tipo[20];
+    char marca[20];
+    char modelo[20];
     float precio;
 
     char tipoBuscado[20];
@@ -107,8 +115,7 @@ void buscarVehiculoPreferencias() {
 
     printf("\n--- VEHICULOS QUE CUMPLEN PREFERENCIAS ---\n");
 
-    while (fscanf(archivo, "%d %s %s %s %f %d",
-                  &id, tipo, marca, modelo, &precio, &disponible) == 6) {
+    while (fscanf(archivo, "%d %s %s %s %f %d",&id, tipo, marca, modelo, &precio, &disponible) == 6) {
 
         if (disponible == 1 &&
             strcmp(tipo, tipoBuscado) == 0 &&
@@ -138,7 +145,9 @@ void registrarVenta() {
     FILE *clientes;
 
     int id, idBuscar;
-    char tipo[20], marca[20], modelo[20];
+    char tipo[20];
+    char marca[20];
+    char modelo[20];
     float precio;
     int disponible;
 
@@ -159,7 +168,7 @@ void registrarVenta() {
         return;
     }
 
-    /* ===== DATOS DEL CLIENTE ===== */
+    //cliente
     printf("ID del cliente: ");
     scanf("%d", &idCliente);
 
@@ -175,7 +184,7 @@ void registrarVenta() {
     fprintf(clientes, "%d %s %d %.2f\n",
             idCliente, nombreCliente, edad, presupuesto);
 
-    /* ===== DATOS DE LA VENTA ===== */
+    //venta
     printf("ID de la venta: ");
     scanf("%d", &idVenta);
 

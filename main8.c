@@ -17,11 +17,20 @@ int main() {
 
         switch (opcion) {
             case 1: {
-                int cantidad;
-                printf("Cuantos vehiculos desea ingresar: ");
-                scanf("%d", &cantidad);
-                guardarVehiculos(cantidad);
-                break;
+            int cantidad;
+
+            do {
+            printf("Cuantos vehiculos desea ingresar: ");
+            scanf("%d", &cantidad);
+
+            if (cantidad <= 0) {
+            printf("Error: la cantidad debe ser mayor que 0.\n");
+            }
+            } while (cantidad <= 0);
+
+            guardarVehiculos(cantidad);
+            break;
+
             }
             
             case 2: 
