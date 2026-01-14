@@ -1,0 +1,11 @@
+322 auto chevrolet onix 10000.00 0
+456 auto lol pep 14000.00 0
+322 auto hyundai pull 20000.00 0
+123 auto hyundai tucson 14000.00 1
+456 auto chevrolet onix 20000.00 0
+322 auto chevrolet onix 20000.00 0
+987 camioneta hyundai pep 190000.00 1
+123 auto chevrolet onix 20000.00 1
+987 camioneta hyundai tucson 14000.00 1
+456 auto chevrolet onix 15000.00 0
+789 camioneta hyundai tucson 20000.00 1
