@@ -3,9 +3,38 @@
 #include "autos.h"
 
  FILE *archivo;
+int idRepetidoArchivo(int idNuevo) {
+    FILE *f = fopen("vehiculos.txt", "r");
+
+    if (f == NULL) {
+        return 0; // no hay archivo → no hay IDs repetidos
+    }
+
+    int id, disponible;
+    char tipo[20], marca[20], modelo[20];
+    float precio;
+
+    while (fscanf(f, "%d %s %s %s %f %d",
+                  &id, tipo, marca, modelo, &precio, &disponible) == 6) {
+
+        if (id == idNuevo) {
+            fclose(f);
+            return 1; // ID repetido
+        }
+    }
+
+    fclose(f);
+    return 0; // ID único
+}
+
 
 void guardarVehiculos(int cantidad) {
     archivo = fopen("vehiculos.txt", "a");
+
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
 
     int id;
     int disponible = 1;
@@ -14,21 +43,23 @@ void guardarVehiculos(int cantidad) {
     char modelo[20];
     float precio;
 
-    if (archivo == NULL) {
-        printf("Error al abrir el archivo\n");
-        return;
-    }
-
     for (int i = 0; i < cantidad; i++) {
-        printf("\nID del vehiculo: ");
-        scanf("%d", &id);
-        getchar();   
 
+        /* VALIDAR ID UNICO */
+        do {
+            printf("\nID del vehiculo: ");
+            scanf("%d", &id);
+            getchar();
+
+            if (idRepetidoArchivo(id)) {
+                printf("Error: el ID ya existe. Ingrese otro.\n");
+            }
+        } while (idRepetidoArchivo(id));
         printf("Tipo (camioneta, auto): ");
         fgets(tipo, sizeof(tipo), stdin);
         tipo[strcspn(tipo, "\n")] = '\0';  
 
-        printf("Marca: ");
+        printf("Marca: (ej: Chevrolet, kia, hyundai, honda) ");
         fgets(marca, sizeof(marca), stdin);
         marca[strcspn(marca, "\n")] = '\0';
 
@@ -52,7 +83,7 @@ void guardarVehiculos(int cantidad) {
 }
 
 void mostrarVehiculos() {
-    archivo = fopen("vehiculos.txt", "r");
+    archivo = fopen("vehiculos.txt", "r");// permite hacer lectura en el archivo
 
     int id;
     char tipo[20];
@@ -66,10 +97,9 @@ void mostrarVehiculos() {
         return;
     }
 
-    rewind(archivo);
+    rewind(archivo);//coloca el puntero al inicio del archivo
 
-    while (fscanf(archivo, "%d %s %s %s %f %d",
-                   &id, tipo, marca, modelo, &precio, &disponible) == 6) {
+    while (fscanf(archivo, "%d %s %s %s %f %d",&id, tipo, marca, modelo, &precio, &disponible) == 6) {
 
         if (disponible == 1) {
             printf("\nID: %d\n", id);
@@ -84,7 +114,7 @@ void mostrarVehiculos() {
     fclose(archivo);
 }
 void buscarVehiculoPreferencias() {
-    archivo = fopen("vehiculos.txt", "r");
+    archivo = fopen("vehiculos.txt", "r");// se abre el archivo en modo lectura
 
     int id;
     int disponible;
@@ -103,17 +133,23 @@ void buscarVehiculoPreferencias() {
         printf("No hay vehiculos registrados.\n");
         return;
     }
+    getchar();
+    printf("Ingrese tipo de vehiculo (ej: camioneta o auto): ");
+    fgets(tipoBuscado, sizeof(tipoBuscado), stdin);
+    tipoBuscado[strcspn(tipoBuscado, "\n")] = '\0';
 
-    printf("Ingrese tipo de vehiculo (ej: camioneta): ");
-    scanf("%s", tipoBuscado);
+    printf("Ingrese marca (ej: Chevrolet, kia, hyundai, honda): ");
+    fgets(marcaBuscada, sizeof(marcaBuscada), stdin);
+    marcaBuscada[strcspn(marcaBuscada, "\n")] = '\0';
 
-    printf("Ingrese marca (ej: Chevrolet): ");
-    scanf("%s", marcaBuscada);
+    do {
+        printf("Ingrese presupuesto maximo: ");
+        scanf("%f", &presupuesto);
 
-    printf("Ingrese presupuesto maximo: ");
-    scanf("%f", &presupuesto);
-
-    printf("\n--- VEHICULOS QUE CUMPLEN PREFERENCIAS ---\n");
+    if (presupuesto <= 0) {
+        printf("Error: el presupuesto debe ser mayor a 0.\n");
+    }
+    } while (presupuesto <= 0);
 
     while (fscanf(archivo, "%d %s %s %s %f %d",&id, tipo, marca, modelo, &precio, &disponible) == 6) {
 
@@ -138,55 +174,32 @@ void buscarVehiculoPreferencias() {
 
     fclose(archivo);
 }
-
 void registrarVenta() {
-    FILE *temp;
-    FILE *ventas;
-    FILE *clientes;
+    FILE *archivo = fopen("vehiculos.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+    FILE *ventas = fopen("ventas.txt", "a");
 
-    int id, idBuscar;
-    char tipo[20];
-    char marca[20];
-    char modelo[20];
-    float precio;
-    int disponible;
-
-    int idVenta;
-    int idCliente, edad;
-    char nombreCliente[30];
-    float presupuesto;
-
-    int encontrado = 0;
-
-    archivo = fopen("vehiculos.txt", "r");
-    temp = fopen("temp.txt", "w");
-    ventas = fopen("ventas.txt", "a");
-    clientes = fopen("clientes.txt", "a");
-
-    if (!archivo || !temp || !ventas || !clientes) {
+    if (!archivo || !temp || !ventas) {
         printf("Error al abrir archivos.\n");
         return;
     }
 
-    //cliente
-    printf("ID del cliente: ");
-    scanf("%d", &idCliente);
+    int id, idBuscar, disponible;
+    char tipo[20];
+    char marca[20];
+    char modelo[20];
+    float precio;
 
+    int numVenta;
+    char nombreCliente[50];
+    int encontrado = 0;
+    
+    printf("Numero de venta: ");
+    scanf("%d", &numVenta);
+    getchar();
     printf("Nombre del cliente: ");
-    scanf("%s", nombreCliente);
-
-    printf("Edad: ");
-    scanf("%d", &edad);
-
-    printf("Presupuesto: ");
-    scanf("%f", &presupuesto);
-
-    fprintf(clientes, "%d %s %d %.2f\n",
-            idCliente, nombreCliente, edad, presupuesto);
-
-    //venta
-    printf("ID de la venta: ");
-    scanf("%d", &idVenta);
+    fgets(nombreCliente, sizeof(nombreCliente), stdin);
+    nombreCliente[strcspn(nombreCliente, "\n")] = '\0';
 
     printf("ID del vehiculo a vender: ");
     scanf("%d", &idBuscar);
@@ -196,12 +209,13 @@ void registrarVenta() {
 
         if (id == idBuscar) {
             encontrado = 1;
-
             if (disponible == 1) {
                 disponible = 0;
-                fprintf(ventas, "%d %d %d\n",
-                        idVenta, idBuscar, idCliente);
-                printf("Venta realizada correctamente.\n");
+
+                fprintf(ventas, "%d %s %s %s %d %.2f\n",
+                        numVenta, nombreCliente, marca, modelo, idBuscar, precio);
+
+                printf("Venta realizada con exito.\n");
             } else {
                 printf("El vehiculo ya fue vendido.\n");
             }
@@ -214,7 +228,6 @@ void registrarVenta() {
     fclose(archivo);
     fclose(temp);
     fclose(ventas);
-    fclose(clientes);
 
     remove("vehiculos.txt");
     rename("temp.txt", "vehiculos.txt");
@@ -223,10 +236,3 @@ void registrarVenta() {
         printf("Vehiculo no encontrado.\n");
     }
 }
-
-
-
-    
-
-
-

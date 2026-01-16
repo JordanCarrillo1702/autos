@@ -1,3 +1,2 @@
-322 20000.00
-678 456 456
-777 555 789
+1 jose loor kia rx 2 24000.00
+2 jordan carrillo kia picanto 7 50000.00

@@ -1,3 +1,10 @@
-965 camioneta kia rio 20000.00 1
-322 auto kia picanto 20000.00 1
-555 camioneta chevrolet bmax 30000.00 0
+1 auto chevrolet dx 25000.00 0
+2 camioneta kia rx 24000.00 0
+3 auto chevrolet lo 20000.00 1
+4 auto chevrolet kl 10000.00 1
+5 auto kia ff 25000.00 1
+6 auto honda gg 30000.00 1
+7 auto kia picanto 50000.00 0
+8 auto kia bb 45000.00 1
+15 camioneta chevrolet ll 15000.00 1
+16 camioneta hyundai pp 25000.00 1
